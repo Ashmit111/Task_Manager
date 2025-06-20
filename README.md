@@ -49,7 +49,7 @@ npm install
 #### `backend/.env` file
 
 ```env
-PORT=5000
+PORT=8080
 MONGO_URI=your_mongodb_connection_string
 ```
 
@@ -61,7 +61,7 @@ MONGO_URI=your_mongodb_connection_string
 npm start
 ```
 
-The backend server should now be running on `http://localhost:5000`.
+The backend server should now be running on `http://localhost:8080`.
 
 ### 3. Frontend Setup
 
@@ -94,7 +94,7 @@ The frontend application should now be running and accessible at `http://localho
 
 The backend provides the following RESTful API endpoints.
 
-**Base URL:** `http://localhost:5000/api`
+**Base URL:** `http://localhost:8080/api`
 
 ### Task Endpoints
 
