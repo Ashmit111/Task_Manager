@@ -38,7 +38,7 @@ const TaskList = ({ tasks, onUpdateStatus, onDelete, isAdmin }) => {
             {tasks.map((task) => (
                 <div
                     key={task._id}
-                    className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6 flex flex-col justify-between transform hover:scale-[1.03] hover:shadow-2xl transition-all duration-300 group"
+                    className="bg-white/95 backdrop-blur-sm rounded-4xl shadow-lg border border-white/20 p-6 flex flex-col justify-between transform hover:scale-[1.03] hover:shadow-2xl transition-all duration-300 group"
                 >
                     <div>
                         <div className="flex justify-between items-start mb-4">

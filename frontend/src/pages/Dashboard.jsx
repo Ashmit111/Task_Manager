@@ -78,13 +78,13 @@ function Dashboard({ user, handleLogout }) {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-400 via-cyan-400 to-gray-500 p-4 md:p-6">
+        <div className="min-h-screen bg-gradient-to-br from-yellow-400 via-cyan-400 to-gray-500 p-4 md:p-6">
             <header className="mb-8 flex justify-between items-center">
                 <div className="text-left">
                     <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">Task Manager</h1>
-                    <p className="text-white/80 text-lg">Welcome, {user} {isAdmin && '(Admin)'}</p>
+                    <p className="text-white font-bold text-xl">Welcome, {user} {isAdmin && '(Admin)'}</p>
                 </div>
-                <button onClick={handleLogout} className="bg-white/20 text-white font-semibold py-2 px-5 rounded-xl hover:bg-white/40 transition-colors duration-300">
+                <button onClick={handleLogout} className="bg-white/20 cursor-pointer text-white font-semibold py-2 px-5 rounded-xl hover:bg-white/40 transition-colors duration-300">
                     Switch User
                 </button>
             </header>
