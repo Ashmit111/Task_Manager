@@ -1,76 +1,44 @@
-name: Deploy to Lightsail
-
-on:
-  push:
-    branches:
-      - master   # your repo uses master as default branch. Adjust if different.
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Start ssh-agent and add key
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
       - name: Deploy to Lightsail via SSH
         env:
           REPO: https://github.com/Ashmit111/Task_Manager.git
+          MONGO_URI: ${{ secrets.MONGO_URI }}
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.LIGHTSAIL_USER }}@${{ secrets.LIGHTSAIL_HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.LIGHTSAIL_USER }}@${{ secrets.LIGHTSAIL_HOST }} << EOF
             set -e
-
             # ensure system tools (first-time only - safe to run every deploy)
             if ! command -v git >/dev/null; then
               sudo apt-get update
               sudo apt-get install -y git curl
             fi
-
             if ! command -v node >/dev/null; then
               curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
               sudo apt-get install -y nodejs
             fi
-
             if ! command -v pm2 >/dev/null; then
               sudo npm install -g pm2 serve
             fi
-
             WORKDIR=/var/www/task_manager
-
             # clone if not present, else reset to remote/master
             if [ ! -d "$WORKDIR" ]; then
               sudo mkdir -p "$WORKDIR"
-              sudo chown -R $(whoami):$(whoami) "$WORKDIR"
+              sudo chown -R \$(whoami):\$(whoami) "$WORKDIR"
               git clone https://github.com/Ashmit111/Task_Manager.git "$WORKDIR"
             fi
-
             cd "$WORKDIR"
             git fetch --all
             git reset --hard origin/master
-
-            # create backend .env (overwrites each deploy)
-            cat > "$WORKDIR/backend/.env" << 'EOT'
-PORT=8080
-MONGO_URI=${{ secrets.MONGO_URI }}
-EOT
-
+            # create backend .env
+            echo "PORT=8080" > "$WORKDIR/backend/.env"
+            echo "MONGO_URI=$MONGO_URI" >> "$WORKDIR/backend/.env"
             # Backend: install & restart
             cd "$WORKDIR/backend"
             npm install --production
             pm2 restart backend || pm2 start npm --name backend -- start
-
             # Frontend: install, build & serve
             cd "$WORKDIR/frontend"
             npm install --production
             npm run build
-            # pm2 serve (serves ./dist on port 3000); adjust if Vite outputs to different folder
             pm2 restart frontend || pm2 serve ./dist 3000 --name frontend
-
             # persist pm2 process list
             pm2 save
-
           EOF
